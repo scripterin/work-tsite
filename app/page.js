@@ -221,7 +221,6 @@ export default function Home() {
       `}</style>
 
       <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-        <ShaderBackground />
 
         <div style={{ position: 'absolute', top: '25%', left: -80, width: 384, height: 384, background: '#7A0F1E', borderRadius: '50%', filter: 'blur(100px)', opacity: 0.5, mixBlendMode: 'screen', zIndex: -1 }} />
         <div style={{ position: 'absolute', bottom: '25%', right: -80, width: 400, height: 400, background: '#7A0F1E', borderRadius: '50%', filter: 'blur(120px)', opacity: 0.35, mixBlendMode: 'screen', zIndex: -1 }} />
