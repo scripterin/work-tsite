@@ -46,23 +46,35 @@ float random(vec2 p) {
 
 void main() {
     vec2 uv = v_texCoord;
-    vec2 p = (uv - 0.5) * (u_resolution.x / u_resolution.y);
+    float aspect = u_resolution.x / u_resolution.y;
+    vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
 
-    vec3 color = vec3(0.039, 0.039, 0.051);
+    // fundal aproape negru, cald
+    vec3 bg = vec3(0.035, 0.02, 0.025);
 
-    float d1 = length(p - vec2(0.3 * sin(u_time * 0.5), 0.2 * cos(u_time * 0.7)));
-    float blob1 = smoothstep(0.8, 0.0, d1);
-    color = mix(color, vec3(1.0, 0.231, 0.306), blob1 * 0.6);
+    // centrul mare de lumina rosie, care se plimba lent
+    vec2 center1 = vec2(0.15 * sin(u_time * 0.15), 0.1 * cos(u_time * 0.12));
+    float d1 = length(p - center1);
+    float glow1 = smoothstep(1.05, 0.0, d1);
 
-    float d2 = length(p - vec2(-0.4 * cos(u_time * 0.4), -0.3 * sin(u_time * 0.6)));
-    float blob2 = smoothstep(0.9, 0.0, d2);
-    color = mix(color, vec3(0.478, 0.059, 0.118), blob2 * 0.5);
+    // al doilea nucleu, mai cald/portocaliu, care se plimba diferit
+    vec2 center2 = vec2(0.3 * cos(u_time * 0.1) - 0.15, -0.25 * sin(u_time * 0.08));
+    float d2 = length(p - center2);
+    float glow2 = smoothstep(0.9, 0.0, d2);
 
-    float d3 = length(p - vec2(0.5 * sin(u_time * 0.3), -0.5 * cos(u_time * 0.4)));
-    float blob3 = smoothstep(0.7, 0.0, d3);
-    color = mix(color, vec3(1.0, 0.231, 0.306), blob3 * 0.4);
+    vec3 crimson = vec3(0.75, 0.09, 0.14);   // rosu-crimson intens
+    vec3 warm    = vec3(0.95, 0.25, 0.18);   // nucleu cald, aproape de centru
 
-    float noise = random(uv + fract(u_time)) * 0.04;
+    vec3 color = bg;
+    color = mix(color, crimson, glow1 * 0.95);
+    color = mix(color, warm, pow(glow2, 2.0) * 0.5);
+
+    // hot-spot suplimentar in centrul compus, ca in imaginea de referinta
+    float centerGlow = smoothstep(1.1, 0.0, length(p));
+    color = mix(color, warm, pow(centerGlow, 3.0) * 0.35);
+
+    // noise foarte fin, doar textura, nu zgomot vizibil
+    float noise = (random(uv * 300.0 + fract(u_time)) - 0.5) * 0.03;
     color += noise;
 
     gl_FragColor = vec4(color, 1.0);
