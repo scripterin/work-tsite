@@ -166,22 +166,7 @@ export default function Home() {
           overflow: hidden;
           border-radius: 28px;
         }
-        .glass-card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: -150%;
-          width: 50%; height: 100%;
-          background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-          transform: skewX(-25deg);
-          animation: sheen 6s infinite;
-          z-index: 1;
-        }
-        @keyframes sheen {
-          0% { left: -150%; }
-          20% { left: 250%; }
-          100% { left: 250%; }
-        }
-
+ 
         .btn-crimson {
           background: linear-gradient(135deg, #FF3B4E 0%, #bf002a 100%);
           position: relative;

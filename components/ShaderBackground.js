@@ -5,22 +5,22 @@ export default function ShaderBackground() {
     <>
       <style jsx global>{`
         @keyframes gradientDrift {
-          0%   { background-position: 60% 35%, 20% 80%; }
-          33%  { background-position: 70% 45%, 30% 70%; }
-          66%  { background-position: 55% 30%, 15% 85%; }
-          100% { background-position: 60% 35%, 20% 80%; }
+          0%   { background-position: 50% 40%, 15% 85%; }
+          33%  { background-position: 60% 50%, 25% 75%; }
+          66%  { background-position: 45% 35%, 10% 90%; }
+          100% { background-position: 50% 40%, 15% 85%; }
         }
 
         .shader-bg {
           position: fixed;
           inset: 0;
           z-index: -1;
-          background-color: #0a0605;
+          background-color: #140505;
           background-image:
-            radial-gradient(circle at 60% 35%, rgba(224, 40, 45, 0.95) 0%, rgba(150, 20, 25, 0.55) 30%, rgba(20, 6, 6, 0) 65%),
-            radial-gradient(circle at 20% 80%, rgba(180, 25, 30, 0.5) 0%, rgba(20, 6, 6, 0) 55%);
-          background-size: 180% 180%, 160% 160%;
-          animation: gradientDrift 22s ease-in-out infinite;
+            radial-gradient(circle at 50% 40%, rgba(230, 45, 50, 1) 0%, rgba(170, 25, 30, 0.85) 35%, rgba(60, 10, 12, 0.4) 60%, rgba(20, 5, 5, 0) 85%),
+            radial-gradient(circle at 15% 85%, rgba(190, 30, 35, 0.7) 0%, rgba(40, 8, 10, 0) 60%);
+          background-size: 260% 260%, 220% 220%;
+          animation: gradientDrift 24s ease-in-out infinite;
         }
 
         .shader-bg::after {
