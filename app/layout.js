@@ -16,9 +16,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ro">
-      <body className={`${inter.className} antialiased`} style={{ background: '#0A0A0D' }}>
+      <body className={`${inter.className} antialiased`}>
         <ShaderBackground />
-        <Providers>{children}</Providers>
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {children}
+        </div>
       </body>
     </html>
   );
