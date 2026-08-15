@@ -287,19 +287,6 @@ export default function Home() {
             </button>
           </div>
         </main>
-
-        <footer style={{
-          width: '100%', padding: '16px 40px', zIndex: 2, position: 'absolute', bottom: 0,
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12,
-          borderTop: '1px solid rgba(255,255,255,0.05)',
-        }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.1em', color: 'rgba(229,225,230,0.6)' }}>
-            © 2026 DEPARTAMENTUL MEDICAL FPLAYT
-          </div>
-          <div style={{ display: 'flex', gap: 24 }}>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.1em', color: '#E5BDBC' }}>SISTEM ACTIV</span>
-          </div>
-        </footer>
       </div>
     </>
   );
