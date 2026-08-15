@@ -18,9 +18,11 @@ export default function RootLayout({ children }) {
     <html lang="ro">
       <body className={`${inter.className} antialiased`}>
         <ShaderBackground />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {children}
-        </div>
+        <Providers>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );
