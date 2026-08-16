@@ -7,29 +7,71 @@ import toast, { Toaster } from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
 import TestButtons from '@/components/TestButtons';
 import RegulamentScreen from '@/components/RegulamentScreen';
+import CountdownOverlay from '@/components/CountdownOverlay';
 
 const COOLDOWN_SOLICITA = 30;
 
+const ToastContent = ({ type, text }) => {
+  const icons = {
+    success: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    ),
+    error: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3B4E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" />
+      </svg>
+    ),
+    info: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E5BDBC" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
+      </svg>
+    ),
+  };
+  const borderColors = { success: 'rgba(34,197,94,0.35)', error: 'rgba(255,59,78,0.35)', info: 'rgba(229,189,185,0.25)' };
+  const iconBg = { success: 'rgba(34,197,94,0.12)', error: 'rgba(255,59,78,0.12)', info: 'rgba(255,255,255,0.06)' };
+
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      padding: '13px 16px',
+      background: 'rgba(15,10,10,0.88)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      border: `1px solid ${borderColors[type] || borderColors.info}`,
+      borderRadius: 14,
+      boxShadow: '0 12px 32px rgba(0,0,0,0.5)',
+      minWidth: 260,
+      maxWidth: 340,
+    }}>
+      <div style={{
+        flexShrink: 0,
+        width: 30, height: 30,
+        borderRadius: 9,
+        background: iconBg[type] || iconBg.info,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {icons[type] || icons.info}
+      </div>
+      <p style={{
+        fontFamily: "'Hanken Grotesk', sans-serif",
+        fontSize: 13,
+        fontWeight: 500,
+        color: 'rgba(229,225,230,0.9)',
+        margin: 0,
+        lineHeight: 1.4,
+      }}>
+        {text}
+      </p>
+    </div>
+  );
+};
+
 const notify = (type, text) => {
-  const base = {
-    background: 'rgba(15,10,10,0.92)',
-    backdropFilter: 'blur(16px)',
-    color: '#E5E1E6',
-    fontSize: '12px',
-    fontWeight: '500',
-    letterSpacing: '0.02em',
-    padding: '12px 18px',
-    borderRadius: '12px',
-    fontFamily: "'Hanken Grotesk', sans-serif",
-    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-    border: '1px solid rgba(255,255,255,0.08)',
-  };
-  const themes = {
-    success: { ...base, borderLeft: '3px solid #FF3B4E' },
-    error:   { ...base, borderLeft: '3px solid #7C1B24', color: '#ffb3b0' },
-    info:    { ...base, borderLeft: '3px solid rgba(255,255,255,0.2)', color: '#E5BDBC' },
-  };
-  toast(text, { style: themes[type] || themes.info, icon: null });
+  toast.custom(() => <ToastContent type={type} text={text} />, { duration: 4500 });
 };
 
 export default function Dashboard() {
@@ -110,7 +152,6 @@ export default function Dashboard() {
   const handleStartTest = () => {
     if (!codeValid) return;
     setCountdown(3);
-    notify('info', 'Te trimitem la test...');
   };
 
   useEffect(() => {
@@ -138,7 +179,7 @@ export default function Dashboard() {
   if (!regulamentAccepted) {
     return (
       <>
-        <Toaster position="bottom-right" toastOptions={{ duration: 4500 }} />
+        <Toaster position="bottom-right" />
         <RegulamentScreen onAccept={handleAcceptRegulament} />
       </>
     );
@@ -288,7 +329,7 @@ export default function Dashboard() {
       `}</style>
 
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
-        <Toaster position="bottom-right" toastOptions={{ duration: 4500 }} />
+        <Toaster position="bottom-right" />
         <Navbar />
 
         <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
@@ -396,7 +437,7 @@ export default function Dashboard() {
                     onClick={handleStartTest}
                     disabled={!codeValid || countdown !== null}
                   >
-                    {countdown !== null ? `inițializare (${countdown})` : 'începe testul →'}
+                    {countdown !== null ? 'se pregătește...' : 'începe testul →'}
                   </button>
                 </div>
 
@@ -423,6 +464,8 @@ export default function Dashboard() {
             </div>
           </div>
         </main>
+
+        <CountdownOverlay count={countdown} />
       </div>
     </>
   );
