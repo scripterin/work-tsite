@@ -22,44 +22,10 @@ export default function Navbar() {
         zIndex: 50,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         padding: '18px 28px',
       }}
     >
-      {/* Brand mic, stânga */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <div
-          style={{
-            width: 26,
-            height: 26,
-            borderRadius: 8,
-            background: 'rgba(255,255,255,0.05)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF3B4E" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
-          </svg>
-        </div>
-        <span
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 10.5,
-            letterSpacing: '0.18em',
-            color: 'rgba(229,225,230,0.4)',
-            textTransform: 'uppercase',
-          }}
-        >
-          Dep. Medical
-        </span>
-      </div>
-
-      {/* Chip utilizator, dreapta */}
       <div
         style={{
           display: 'flex',

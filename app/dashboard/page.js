@@ -368,16 +368,6 @@ export default function Dashboard() {
               <div style={{ padding: '40px 36px', display: 'flex', flexDirection: 'column', gap: 30 }}>
 
                 <header>
-                  <p style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 11,
-                    letterSpacing: '0.24em',
-                    color: '#E5BDBC',
-                    marginBottom: 10,
-                    textTransform: 'uppercase',
-                  }}>
-                    Panou candidat
-                  </p>
                   <h1 style={{
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontWeight: 700,
@@ -392,7 +382,7 @@ export default function Dashboard() {
                       WebkitBackgroundClip: 'text',
                       backgroundClip: 'text',
                       color: 'transparent',
-                    }}>testul.</span>
+                    }}>testul</span>
                   </h1>
                 </header>
 

@@ -244,7 +244,7 @@ export default function Home() {
               color: '#E5E1E6',
               margin: '0 0 16px',
             }}>
-              Intră în <br /><span className="crimson-text">sistem.</span>
+              Intră în <br /><span className="crimson-text">sistem</span>
             </h1>
 
             <p style={{
