@@ -35,6 +35,7 @@ function TestRadioContent() {
   const stareRef = useRef<'activ' | 'promovat' | 'picat'>('activ');
   const intrebariGresiteRef = useRef<any[]>([]);
   const motivRef = useRef('');
+  const isSubmittingAnswerRef = useRef(false); // ✅ guard anti-spam
 
   const verificaStatusCod = useCallback(async () => {
     if (!cod) return;
@@ -117,6 +118,9 @@ function TestRadioContent() {
 
   const handleConfirm = async () => {
     if (!optiuneSelectata || feedback || !intrebareCurenta) return;
+    if (isSubmittingAnswerRef.current) return; // ✅ blochează click-uri repetate instant
+    isSubmittingAnswerRef.current = true;
+
     let corect = false;
     let raspunsCorect = '';
     try {
@@ -130,6 +134,7 @@ function TestRadioContent() {
       raspunsCorect = data.raspunsCorect ?? '';
     } catch (e) {
       console.error('Eroare la verificare:', e);
+      isSubmittingAnswerRef.current = false; // ✅ eliberează și la eroare
       return;
     }
 
@@ -150,6 +155,7 @@ function TestRadioContent() {
     setTimeout(async () => {
       setFeedback(null);
       setOptiuneSelectata(null);
+      isSubmittingAnswerRef.current = false; // ✅ eliberează abia la trecerea la întrebarea următoare
       const urmatorulIndex = indexCurent + 1;
       if (urmatorulIndex >= totalIntrebari) {
         terminaTest('finalizat');
