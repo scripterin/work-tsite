@@ -9,7 +9,7 @@ import TestButtons from '@/components/TestButtons';
 import RegulamentScreen from '@/components/RegulamentScreen';
 import CountdownOverlay from '@/components/CountdownOverlay';
 
-const COOLDOWN_SOLICITA = 30;
+const COOLDOWN_SOLICITA = 90; // 1 minut 30 secunde
 
 const ToastContent = ({ type, text }) => {
   const icons = {
@@ -93,6 +93,22 @@ export default function Dashboard() {
 
   const handleAcceptRegulament = () => setRegulamentAccepted(true);
 
+  // ✅ Verifică pe server dacă mai există un cooldown activ (supraviețuiește refresh/reintrare)
+  useEffect(() => {
+    const checkCooldownStatus = async () => {
+      try {
+        const res = await fetch('/api/cooldown-status');
+        const data = await res.json();
+        if (data.remainingSeconds > 0) {
+          setCooldownSolicita(data.remainingSeconds);
+        }
+      } catch (e) {
+        console.error('Eroare verificare cooldown:', e);
+      }
+    };
+    checkCooldownStatus();
+  }, []);
+
   useEffect(() => {
     if (cooldownSolicita <= 0) return;
     cooldownRef.current = setInterval(() => {
@@ -120,8 +136,12 @@ export default function Dashboard() {
         body: JSON.stringify({ testSelectat: selectedTest }),
       });
       const data = await res.json();
-      if (!res.ok) notify('error', data.error || 'Eroare la generare.');
-      else {
+      if (res.status === 429) {
+        notify('error', data.error || 'Trebuie să mai aștepți.');
+        setCooldownSolicita(data.retryAfterSeconds || COOLDOWN_SOLICITA);
+      } else if (!res.ok) {
+        notify('error', data.error || 'Eroare la generare.');
+      } else {
         notify('success', 'Codul a fost trimis pe Discord — verifică mesajele private!');
         setCooldownSolicita(COOLDOWN_SOLICITA);
       }
@@ -315,7 +335,7 @@ export default function Dashboard() {
           justify-content: center;
           font-family: 'Space Grotesk', sans-serif;
           font-weight: 700;
-          font-size: 22px;
+          font-size: 20px;
           color: #FF3B4E;
         }
         .cooldown-label {
