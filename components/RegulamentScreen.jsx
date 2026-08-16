@@ -1,83 +1,47 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 const ARTICLES = [
   {
-    title: "Art. 1 — Confidențialitate",
+    title: "Confidențialitate",
     text: "Toate materialele, întrebările și informațiile prezentate în cadrul testelor sunt strict confidențiale. Este interzisă reproducerea, distribuirea sau publicarea conținutului sub orice formă.",
   },
   {
-    title: "Art. 2 — Comportament în timpul testului",
+    title: "Comportament în timpul testului",
     text: "Candidații sunt obligați să completeze testul individual, fără ajutor extern. Utilizarea surselor terțe sau comunicarea cu alte persoane în timpul testului atrage descalificarea imediată.",
   },
   {
-    title: "Art. 3 — Codul de acces",
+    title: "Codul de acces",
     text: "Codul de acces este personal și netransmisibil. Utilizarea unui cod aparținând altei persoane constituie o încălcare gravă și poate atrage sancțiuni disciplinare.",
   },
   {
-    title: "Art. 4 — Rezultate și notare",
+    title: "Rezultate și notare",
     text: "Rezultatele testului sunt înregistrate automat la momentul finalizării. Orice tentativă de manipulare a sistemului sau de falsificare a rezultatelor va fi raportată ierarhic.",
   },
   {
-    title: "Art. 5 — Acceptarea regulamentului",
-    text: "Prin apăsarea butonului de acceptare, confirmați că ați citit, înțeles și sunteți de acord cu toate prevederile prezentului regulament.",
+    title: "Acceptarea regulamentului",
+    text: "Prin bifarea tuturor punctelor și apăsarea butonului de acceptare, confirmați că ați citit, înțeles și sunteți de acord cu toate prevederile prezentului regulament.",
   },
 ];
 
 export default function RegulamentScreen({ onAccept }) {
-  const [articles, setArticles] = useState([]);
-  const [done, setDone] = useState(false);
+  const [checked, setChecked] = useState(() => new Array(ARTICLES.length).fill(false));
   const [exiting, setExiting] = useState(false);
-  const scrollRef = useRef(null);
 
-  useEffect(() => {
-    let artIdx = 0;
-    let charInSection = 0;
-    let phase = 'title';
-    let timeout;
-    const rendered = [];
+  const toggleCheck = (i) => {
+    setChecked(prev => {
+      const next = [...prev];
+      next[i] = !next[i];
+      return next;
+    });
+  };
 
-    function typeNext() {
-      if (artIdx >= ARTICLES.length) {
-        setDone(true);
-        return;
-      }
-      const art = ARTICLES[artIdx];
-      if (phase === 'title') {
-        if (charInSection === 0) rendered.push({ title: '', text: '' });
-        if (charInSection < art.title.length) {
-          rendered[rendered.length - 1].title = art.title.slice(0, charInSection + 1);
-          charInSection++;
-          setArticles([...rendered]);
-          if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-          timeout = setTimeout(typeNext, 28);
-        } else {
-          charInSection = 0;
-          phase = 'text';
-          timeout = setTimeout(typeNext, 60);
-        }
-      } else {
-        if (charInSection < art.text.length) {
-          rendered[rendered.length - 1].text = art.text.slice(0, charInSection + 1);
-          charInSection++;
-          setArticles([...rendered]);
-          if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-          timeout = setTimeout(typeNext, 18);
-        } else {
-          charInSection = 0;
-          phase = 'title';
-          artIdx++;
-          timeout = setTimeout(typeNext, 200);
-        }
-      }
-    }
-
-    const start = setTimeout(typeNext, 500);
-    return () => { clearTimeout(start); clearTimeout(timeout); };
-  }, []);
+  const allChecked = checked.every(Boolean);
+  const checkedCount = checked.filter(Boolean).length;
 
   const handleAccept = () => {
+    if (!allChecked) return;
     setExiting(true);
     setTimeout(onAccept, 650);
   };
@@ -87,66 +51,99 @@ export default function RegulamentScreen({ onAccept }) {
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-        .reg-scroll::-webkit-scrollbar {
-          display: none;
-        }
-
-        .cursor-blink {
-          display: inline-block;
-          width: 2px;
-          height: 1em;
-          background: #FF3B4E;
-          margin-left: 2px;
-          vertical-align: text-bottom;
-          animation: cursorBlink 0.8s step-end infinite;
-        }
-
-        @keyframes cursorBlink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-
-        .alert-pulse {
-          animation: pulseRed 2s infinite;
-        }
-
-        @keyframes pulseRed {
-          0% { box-shadow: 0 0 0 0 rgba(255, 59, 78, 0.35); }
-          70% { box-shadow: 0 0 0 10px rgba(255, 59, 78, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(255, 59, 78, 0); }
-        }
-
-        .accept-btn {
-          width: 100%;
-          padding: 16px;
-          background: linear-gradient(135deg, #FF3B4E 0%, #bf002a 100%);
-          border: none;
-          border-radius: 14px;
-          color: #fff;
-          font-family: 'Hanken Grotesk', sans-serif;
-          font-size: 13.5px;
-          font-weight: 600;
-          letter-spacing: 0.01em;
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 0 8px 32px rgba(255, 59, 78, 0.35);
-          animation: fadeUp 0.4s ease both;
-        }
-        .accept-btn:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 12px 40px rgba(255, 59, 78, 0.5);
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(8px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-
         .reg-card-in {
           animation: cardIn 0.7s cubic-bezier(0.16,1,0.3,1) both;
         }
         @keyframes cardIn {
           from { opacity: 0; transform: translateY(24px) scale(0.98); }
           to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .article-row {
+          animation: rowIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        @keyframes rowIn {
+          from { opacity: 0; transform: translateX(-12px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+
+        .article-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+          padding: 16px;
+          border-radius: 14px;
+          border: 1px solid rgba(255,255,255,0.07);
+          background: rgba(255,255,255,0.02);
+          cursor: pointer;
+          transition: all 0.25s ease;
+        }
+        .article-row:hover {
+          border-color: rgba(255,59,78,0.3);
+          background: rgba(255,59,78,0.04);
+        }
+        .article-row.checked {
+          border-color: rgba(255,59,78,0.4);
+          background: linear-gradient(135deg, rgba(255,59,78,0.08) 0%, rgba(191,0,42,0.04) 100%);
+        }
+
+        .check-box {
+          flex-shrink: 0;
+          width: 22px;
+          height: 22px;
+          border-radius: 7px;
+          border: 1.5px solid rgba(255,255,255,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+          margin-top: 1px;
+        }
+        .check-box.checked {
+          background: linear-gradient(135deg, #FF3B4E 0%, #bf002a 100%);
+          border-color: #FF3B4E;
+          box-shadow: 0 0 12px rgba(255,59,78,0.4);
+        }
+
+        .accept-btn {
+          width: 100%;
+          padding: 16px;
+          border: none;
+          border-radius: 14px;
+          font-family: 'Hanken Grotesk', sans-serif;
+          font-size: 13.5px;
+          font-weight: 600;
+          letter-spacing: 0.01em;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .accept-btn.active {
+          background: linear-gradient(135deg, #FF3B4E 0%, #bf002a 100%);
+          color: #fff;
+          box-shadow: 0 8px 32px rgba(255,59,78,0.35);
+        }
+        .accept-btn.active:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 40px rgba(255,59,78,0.5);
+        }
+        .accept-btn.inactive {
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.06);
+          color: rgba(255,255,255,0.25);
+          cursor: not-allowed;
+        }
+
+        .progress-track {
+          height: 3px;
+          background: rgba(255,255,255,0.06);
+          border-radius: 999px;
+          overflow: hidden;
+        }
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #FF3B4E, #bf002a);
+          transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+          box-shadow: 0 0 10px rgba(255,59,78,0.5);
         }
       `}</style>
 
@@ -171,51 +168,11 @@ export default function RegulamentScreen({ onAccept }) {
           borderRadius: 28,
           overflow: 'hidden',
           width: '100%',
-          maxWidth: 460,
+          maxWidth: 520,
           boxShadow: '0 40px 80px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)',
         }}>
 
           <div style={{ padding: '40px 36px 32px' }}>
-
-            {/* --- AVERTIZARE --- */}
-            <div className="alert-pulse" style={{
-              background: 'rgba(255, 59, 78, 0.08)',
-              border: '1px solid rgba(255, 59, 78, 0.25)',
-              borderRadius: 12,
-              padding: '14px 16px',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 12,
-              marginBottom: 28,
-            }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF3B4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
-                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-              <div>
-                <p style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: 10,
-                  fontWeight: 600,
-                  color: '#FF3B4E',
-                  margin: 0,
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                }}>
-                  Atenție maximă
-                </p>
-                <p style={{
-                  fontFamily: "'Hanken Grotesk', sans-serif",
-                  fontSize: 12,
-                  color: 'rgba(229,225,230,0.85)',
-                  margin: '4px 0 0 0',
-                  lineHeight: 1.4,
-                }}>
-                  NU schimbați fereastra sau apăsați <span style={{ color: '#FF3B4E', fontWeight: 600 }}>ALT+TAB</span> pe durata testului.
-                </p>
-              </div>
-            </div>
 
             <span style={{
               fontFamily: "'JetBrains Mono', monospace",
@@ -230,11 +187,11 @@ export default function RegulamentScreen({ onAccept }) {
             <h1 style={{
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
-              fontSize: 38,
+              fontSize: 36,
               letterSpacing: '-0.02em',
               color: '#E5E1E6',
               lineHeight: 1.1,
-              margin: '10px 0 24px',
+              margin: '10px 0 8px',
             }}>
               Regula<span style={{
                 background: 'linear-gradient(135deg, #FF3B4E 0%, #bf002a 100%)',
@@ -244,50 +201,81 @@ export default function RegulamentScreen({ onAccept }) {
               }}>ment</span>
             </h1>
 
-            <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent)', marginBottom: 24 }} />
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: 13,
+              color: 'rgba(229,225,230,0.5)',
+              margin: '0 0 24px',
+              lineHeight: 1.5,
+            }}>
+              Bifează fiecare punct pentru a confirma că l-ai citit și înțeles.
+            </p>
 
-            <div
-              className="reg-scroll"
-              ref={scrollRef}
-              style={{
-                maxHeight: 260,
-                overflowY: 'auto',
-                scrollbarWidth: 'none',
-                marginBottom: 28,
-              }}
-            >
-              {articles.map((art, i) => (
-                <div key={i} style={{ marginBottom: 20 }}>
-                  <div style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 10,
-                    letterSpacing: '0.15em',
-                    color: '#FF3B4E',
-                    textTransform: 'uppercase',
-                    marginBottom: 6,
-                  }}>
-                    {art.title}
-                  </div>
-                  <div style={{
-                    fontFamily: "'Hanken Grotesk', sans-serif",
-                    fontSize: 13,
-                    lineHeight: 1.7,
-                    color: 'rgba(229,225,230,0.65)',
-                  }}>
-                    {art.text}
-                    {i === articles.length - 1 && !done && (
-                      <span className="cursor-blink" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+              {ARTICLES.map((art, i) => (
+                <div
+                  key={i}
+                  className={`article-row${checked[i] ? ' checked' : ''}`}
+                  style={{ animationDelay: `${i * 0.08}s` }}
+                  onClick={() => toggleCheck(i)}
+                >
+                  <div className={`check-box${checked[i] ? ' checked' : ''}`}>
+                    {checked[i] && (
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
                     )}
+                  </div>
+                  <div>
+                    <p style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: 10,
+                      letterSpacing: '0.1em',
+                      color: checked[i] ? '#FF3B4E' : 'rgba(255,255,255,0.35)',
+                      textTransform: 'uppercase',
+                      margin: '0 0 5px',
+                      transition: 'color 0.25s ease',
+                    }}>
+                      Art. {i + 1} — {art.title}
+                    </p>
+                    <p style={{
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontSize: 12.5,
+                      lineHeight: 1.6,
+                      color: 'rgba(229,225,230,0.65)',
+                      margin: 0,
+                    }}>
+                      {art.text}
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
 
-            {done && (
-              <button className="accept-btn" onClick={handleAccept}>
-                Accept regulamentul
-              </button>
-            )}
+            <div style={{ marginBottom: 20 }}>
+              <div className="progress-track">
+                <div className="progress-fill" style={{ width: `${(checkedCount / ARTICLES.length) * 100}%` }} />
+              </div>
+              <p style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 10,
+                letterSpacing: '0.12em',
+                color: 'rgba(255,255,255,0.3)',
+                textTransform: 'uppercase',
+                marginTop: 10,
+                textAlign: 'center',
+              }}>
+                {checkedCount} / {ARTICLES.length} confirmate
+              </p>
+            </div>
+
+            <button
+              className={`accept-btn ${allChecked ? 'active' : 'inactive'}`}
+              onClick={handleAccept}
+              disabled={!allChecked}
+            >
+              {allChecked ? 'Accept regulamentul' : 'Bifează toate punctele'}
+            </button>
           </div>
 
           <div style={{
