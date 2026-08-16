@@ -144,11 +144,38 @@ export default function RegulamentScreen({ onAccept }) {
           box-shadow: 0 0 10px rgba(255,59,78,0.5);
         }
 
-        .alert-pulse { animation: pulseRed 2.2s infinite; }
-        @keyframes pulseRed {
-          0% { box-shadow: 0 0 0 0 rgba(255,59,78,0.35); }
-          70% { box-shadow: 0 0 0 8px rgba(255,59,78,0); }
-          100% { box-shadow: 0 0 0 0 rgba(255,59,78,0); }
+        .warn-strip {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 4px 2px 14px;
+          margin-bottom: 10px;
+          border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .warn-icon-ring {
+          flex-shrink: 0;
+          width: 30px;
+          height: 30px;
+          border-radius: 9px;
+          background: rgba(255,59,78,0.1);
+          border: 1px solid rgba(255,59,78,0.25);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+        }
+        .warn-icon-ring::after {
+          content: '';
+          position: absolute;
+          inset: -3px;
+          border-radius: 11px;
+          border: 1px solid rgba(255,59,78,0.3);
+          animation: warnPing 2s ease-out infinite;
+        }
+        @keyframes warnPing {
+          0%   { transform: scale(0.9); opacity: 0.8; }
+          100% { transform: scale(1.35); opacity: 0; }
         }
       `}</style>
 
@@ -180,48 +207,7 @@ export default function RegulamentScreen({ onAccept }) {
           boxShadow: '0 40px 80px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)',
         }}>
 
-          <div style={{ padding: '22px 26px 18px', display: 'flex', flexDirection: 'column', minHeight: 0, flex: 1 }}>
-
-            {/* Avertizare anticheat */}
-            <div className="alert-pulse" style={{
-              background: 'rgba(255, 59, 78, 0.08)',
-              border: '1px solid rgba(255, 59, 78, 0.25)',
-              borderRadius: 11,
-              padding: '11px 13px',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 10,
-              marginBottom: 16,
-              flexShrink: 0,
-            }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3B4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
-                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-              <div>
-                <p style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: 9.5,
-                  fontWeight: 600,
-                  color: '#FF3B4E',
-                  margin: 0,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                }}>
-                  Atenție maximă
-                </p>
-                <p style={{
-                  fontFamily: "'Hanken Grotesk', sans-serif",
-                  fontSize: 11.5,
-                  color: 'rgba(229,225,230,0.85)',
-                  margin: '3px 0 0 0',
-                  lineHeight: 1.4,
-                }}>
-                  NU schimbați fereastra sau apăsați <span style={{ color: '#FF3B4E', fontWeight: 600 }}>ALT+TAB</span> pe durata testului — duce la descalificare automată.
-                </p>
-              </div>
-            </div>
+          <div style={{ padding: '26px 26px 20px', display: 'flex', flexDirection: 'column', minHeight: 0, flex: 1 }}>
 
             <h1 style={{
               fontFamily: "'Space Grotesk', sans-serif",
@@ -245,12 +231,31 @@ export default function RegulamentScreen({ onAccept }) {
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: 12,
               color: 'rgba(229,225,230,0.5)',
-              margin: '0 0 14px',
+              margin: '0 0 16px',
               lineHeight: 1.4,
               flexShrink: 0,
             }}>
               Bifează fiecare punct pentru a confirma că l-ai citit și înțeles.
             </p>
+
+            <div className="warn-strip" style={{ flexShrink: 0 }}>
+              <div className="warn-icon-ring">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF3B4E" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <p style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: 11.5,
+                color: 'rgba(229,225,230,0.75)',
+                margin: 0,
+                lineHeight: 1.4,
+              }}>
+                <span style={{ color: '#FF3B4E', fontWeight: 600 }}>Nu schimba fereastra</span> sau apăsa ALT+TAB pe durata testului — atrage descalificare automată.
+              </p>
+            </div>
 
             <div
               className="reg-scroll"
